@@ -1,5 +1,9 @@
 # Sistema de Recomendação de Filmes — MovieLens + Neo4j + KNN
 
+## Integrantes
+Cauã Mendes Gomes
+Stephany de França Inacio Dutra
+
 Projeto acadêmico de recomendação colaborativa de filmes utilizando correlação de Pearson entre filmes, previsão de notas baseada em vizinhos (KNN) e armazenamento de dados em um grafo no Neo4j.
 
 ## 1. Tecnologias
