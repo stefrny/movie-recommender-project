@@ -1,8 +1,15 @@
 # Sistema de Recomendação de Filmes — MovieLens + Neo4j + KNN
 
-Projeto acadêmico de recomendação colaborativa de filmes utilizando correlação de Pearson entre filmes, previsão de notas baseada em vizinhos (KNN) e armazenamento de dados em um grafo no Neo4j.
+## Integrantes
+Cauã Mendes Gomes
 
-## 1. Tecnologias
+Stephany de França Inacio Dutra
+
+---
+
+### Projeto acadêmico de recomendação colaborativa de filmes utilizando correlação de Pearson entre filmes, previsão de notas baseada em vizinhos (KNN) e armazenamento de dados em um grafo no Neo4j.
+
+## Tecnologias
 
 - Python 3.10+
 - pandas e NumPy para manipulação de dados e cálculos.
@@ -11,7 +18,7 @@ Projeto acadêmico de recomendação colaborativa de filmes utilizando correlaç
 
 Não são utilizadas bibliotecas prontas de recomendação, como scikit-learn. O cálculo das similaridades, as previsões e as métricas de avaliação são implementados no próprio projeto.
 
-## 2. Dados
+## Dados
 
 O script `01_baixar_dados.py` baixa o conjunto MovieLens Latest Small, disponibilizado pelo GroupLens.
 
@@ -21,7 +28,7 @@ O conjunto contém aproximadamente 100 mil avaliações e os arquivos `movies.cs
 
 O projeto utiliza esses arquivos para calcular as similaridades entre filmes, gerar previsões e avaliar o modelo. Os CSVs não são versionados no Git, pois podem ser baixados novamente pelo script de preparação dos dados.
 
-## 3. Modelagem do grafo
+## Modelagem do grafo
 
 O grafo representa usuários, filmes, avaliações e similaridades entre filmes.
 
@@ -71,7 +78,7 @@ Cada par de filmes é armazenado uma vez, e a relação pode ser consultada nos 
 (:Filme)
 ```
 
-## 4. Instalação e execução
+## Instalação e execução
 
 ### Passo 1 — Instalar dependências e baixar os dados
 
@@ -164,7 +171,7 @@ python 04_consultas_neo4j.py
 
 O exemplo utiliza o usuário de identificador `10`. O resultado depende das avaliações e das relações de similaridade disponíveis para esse usuário.
 
-## 5. Consultas Cypher úteis
+## Consultas Cypher úteis
 
 As consultas abaixo podem ser executadas no Neo4j Browser, desde que a importação tenha sido concluída.
 
@@ -196,7 +203,7 @@ O processo parte dos filmes avaliados positivamente pelo usuário, percorre as r
 
 A consulta retorna os filmes recomendados, suas notas estimadas e a quantidade de evidências utilizadas na previsão.
 
-## 6. Método de recomendação
+## Método de recomendação
 
 O projeto utiliza filtragem colaborativa baseada em itens (*item-based collaborative filtering*).
 
@@ -234,7 +241,7 @@ As previsões são limitadas ao intervalo de 0,5 a 5,0. Quando não existem vizi
 
 Na consulta do Neo4j, as recomendações são direcionadas a filmes similares aos que o usuário avaliou positivamente. Por isso, a consulta de recomendações pode utilizar um subconjunto diferente de vizinhos daquele utilizado pelo avaliador Python, que considera os filmes avaliados pelo usuário com similaridade disponível.
 
-## 7. Avaliação do modelo
+## Avaliação do modelo
 
 O projeto utiliza as seguintes métricas:
 
@@ -255,7 +262,7 @@ A divisão dos dados é aleatória por avaliação, e não temporal. Uma divisã
 
 Os valores das métricas devem ser obtidos a partir da execução do script `02_modelo_avaliacao.py` e do arquivo `metricas.json`, sem inserir resultados não calculados.
 
-## 8. Estrutura do repositório
+## Estrutura do repositório
 
 ```text
 movie_recommender_project/
@@ -273,15 +280,3 @@ movie_recommender_project/
 ```
 
 Os diretórios `dados/` e `resultados/` armazenam os arquivos utilizados e gerados durante a execução. Os arquivos CSV e JSON podem ser recriados executando os scripts correspondentes.
-
-## 9. O que apresentar na entrega
-
-1. Explicar os nós, os relacionamentos e seus atributos.
-2. Demonstrar a execução do script de importação no Neo4j.
-3. Executar as consultas de comédias avaliadas com nota igual ou superior a 4 e de recomendações.
-4. Mostrar o conteúdo do arquivo `metricas.json` e explicar o significado de precisão, recall, MAE e RMSE.
-5. Explicar como a divisão entre treino e teste é realizada.
-6. Informar que as similaridades e as médias utilizadas pelo modelo são calculadas com as avaliações de treino.
-7. Apresentar as limitações metodológicas da avaliação de ranking.
-
-Os resultados numéricos devem ser obtidos pela execução dos scripts. O README documenta o funcionamento do projeto e os procedimentos necessários para reproduzir os resultados.
