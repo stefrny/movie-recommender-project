@@ -1,5 +1,4 @@
 
-"""Insere filmes, usuários, avaliações de treino e similaridades no Neo4j."""
 
 from pathlib import Path
 import os
@@ -8,19 +7,16 @@ import pandas as pd
 from neo4j import GraphDatabase
 
 
-# Caminhos do projeto
 BASE = Path(__file__).resolve().parent
 DADOS = BASE / "dados"
 SAIDA = BASE / "resultados"
 
-# Configuração de conexão com o Neo4j
 URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
 USUARIO = os.getenv("NEO4J_USER", "neo4j")
 SENHA = os.getenv("NEO4J_PASSWORD", "troque_esta_senha")
 
 
 def main():
-    # Carrega os arquivos de dados
     movies = pd.read_csv(DADOS / "movies.csv").fillna("")
 
     treino_path = SAIDA / "ratings_treino.csv"
@@ -34,17 +30,14 @@ def main():
     ratings = pd.read_csv(treino_path)
     similarities = pd.read_csv(sim_path)
 
-    # Calcula a nota média de cada filme usando somente os dados de treino.
     medias_filmes = (
         ratings.groupby("movieId")["rating"]
         .mean()
         .to_dict()
     )
 
-    # Média global usada como alternativa para filmes sem avaliações de treino.
     media_global = float(ratings["rating"].mean())
 
-    # Prepara os filmes e seus gêneros.
     filmes = []
 
     for row in movies.to_dict("records"):
@@ -65,7 +58,6 @@ def main():
             )
         })
 
-    # Prepara as avaliações dos usuários.
     avaliacoes = []
 
     for r in ratings.itertuples(index=False):
@@ -80,7 +72,6 @@ def main():
             )
         })
 
-    # Prepara as relações de similaridade entre filmes.
     relacoes = []
 
     for r in similarities.itertuples(index=False):
@@ -91,7 +82,6 @@ def main():
             "co_ratings": int(r.co_ratings)
         })
 
-    # Conecta ao Neo4j e importa os dados.
     driver = GraphDatabase.driver(
         URI,
         auth=(USUARIO, SENHA)
@@ -120,7 +110,6 @@ def main():
                 ON (f.title)
             """)
 
-            # Importa os filmes, incluindo suas notas médias.
             for inicio in range(0, len(filmes), 500):
                 lote = filmes[inicio:inicio + 500]
 
@@ -132,7 +121,6 @@ def main():
                         f.media_rating = item.media_rating
                 """, lote=lote)
 
-            # Importa os usuários e suas avaliações.
             for inicio in range(0, len(avaliacoes), 1000):
                 lote = avaliacoes[inicio:inicio + 1000]
 
@@ -146,7 +134,6 @@ def main():
                         a.timestamp = item.timestamp
                 """, lote=lote)
 
-            # Importa as similaridades de Pearson entre os filmes.
             for inicio in range(0, len(relacoes), 1000):
                 lote = relacoes[inicio:inicio + 1000]
 

@@ -1,5 +1,4 @@
 
-"""Baixa o MovieLens Small e extrai movies.csv e ratings.csv."""
 import ssl
 import certifi
 from pathlib import Path

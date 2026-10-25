@@ -1,4 +1,3 @@
-"""Divisão 80/20, Pearson entre filmes, KNN e métricas de recomendação."""
 from pathlib import Path
 from itertools import combinations
 from collections import defaultdict
@@ -16,11 +15,9 @@ LIMIAR_RELEVANTE = 4.0
 MIN_COAVALIACOES = 3
 
 def calcular_similaridades(ratings_treino):
-    """Pearson por pares de filmes que tenham usuários avaliadores em comum."""
     por_usuario = ratings_treino.groupby("userId")
     pares = defaultdict(list)
 
-    # Para cada usuário, guardar as notas dos pares de filmes que avaliou.
     for _, grupo in por_usuario:
         linhas = list(grupo[["movieId", "rating"]].itertuples(index=False, name=None))
         for (filme_a, nota_a), (filme_b, nota_b) in combinations(linhas, 2):
@@ -38,8 +35,7 @@ def calcular_similaridades(ratings_treino):
             continue
         a = np.array([x[0] for x in observacoes], dtype=float)
         b = np.array([x[1] for x in observacoes], dtype=float)
-        # Pearson pareado: centraliza as notas dos usuários que avaliaram ambos os filmes.
-        # Isso mantém a correlação dentro do intervalo [-1, 1].
+
         da = a - float(a.mean())
         db = b - float(b.mean())
         denominador = np.sqrt(np.sum(da ** 2) * np.sum(db ** 2))
@@ -66,7 +62,6 @@ def obter_similaridade(similaridades, filme_a, filme_b):
     return similaridades.get(chave)
 
 def prever_nota(usuario, filme_alvo, notas_usuario, similaridades, media_filmes, media_global):
-    """Prevê a nota usando Pearson e os desvios em relação às médias dos filmes."""
     media_alvo = float(media_filmes.get(filme_alvo, media_global))
     candidatos = []
 
@@ -136,7 +131,6 @@ def main():
     }
     media_global = float(treino["rating"].mean())
 
-    # Métricas de previsão de nota calculadas apenas nos pares usuário-filme do teste.
     erros = []
     teste_com_previsoes = []
     for linha in teste.itertuples(index=False):
@@ -155,9 +149,6 @@ def main():
     rmse = float(np.sqrt(np.mean(np.square(erros))))
     pred_df.to_csv(SAIDA / "previsoes_teste.csv", index=False)
 
-    # Relevante = nota real >= 4. Recomendações são itens do teste ordenados
-    # pela nota prevista; itens que não aparecem no teste não entram no denominador.
-    # Essa avaliação mede ranking entre itens retidos no teste, não catálogo completo.
     catalogo_teste = teste.merge(movies[["movieId", "title"]], on="movieId", how="left")
     catalogo_teste = catalogo_teste.merge(
         pred_df[["userId", "movieId", "rating_previsto"]],

@@ -1,4 +1,3 @@
-"""Consultas de exemplo ao grafo Neo4j."""
 import os
 from neo4j import GraphDatabase
 
@@ -16,7 +15,6 @@ def executar(session, titulo, cypher, parametros):
         print(registro)
 
 def main():
-    # Altere para um userId existente no MovieLens.
     usuario_x = int(os.getenv("USUARIO_X", "1"))
     limite = int(os.getenv("LIMITE_RECOMENDACOES", "10"))
     driver = GraphDatabase.driver(URI, auth=(USUARIO, SENHA))
@@ -36,10 +34,7 @@ def main():
                 RETURN count(f) AS quantidade
             """, {"userId": usuario_x})
 
-            # Recomendações usando notas previstas já calculadas pelo modelo.
-            # A consulta usa SIMILAR_A e ratings conhecidos pelo usuário.
             
-            # Recomendações com média do filme-alvo e desvios das notas.
             executar(session, "Filmes similares a filmes bem avaliados pelo usuário", """
                 MATCH (u:Usuario {userId: $userId})-[r:AVALIOU]->(visto:Filme)
             WHERE r.rating >= 4
