@@ -1,9 +1,9 @@
 # Sistema de Recomendação de Filmes — MovieLens + Neo4j + KNN
 
 ## Integrantes
-Cauã Mendes Gomes
-
-Stephany de França Inacio Dutra
+* **Emanuelly Gomes Rocha Dantas**
+* **Gabriel Vitor dos Santos Frasão**
+* **Stephany de França Inacio Dutra**
 
 ---
 
